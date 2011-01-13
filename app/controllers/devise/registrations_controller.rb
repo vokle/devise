@@ -94,7 +94,7 @@ class Devise::RegistrationsController < ApplicationController
       if defined?(super)
         ActiveSupport::Deprecation.warn "Defining after_update_path_for in ApplicationController " <<
           "is deprecated. Please add a RegistrationsController to your application and define it there."
-        super
+        sup
       else
         after_sign_in_path_for(resource)
       end
@@ -105,9 +105,8 @@ class Devise::RegistrationsController < ApplicationController
     # the current user in place.
     def authenticate_scope!
       send(:"authenticate_#{resource_name}!")
-      current_resource_meth = :"current_#{resource_name}"
-      respond_to?(current_resource_meth) ?
-        (self.resource = resource_class.to_adapter.get!(send(current_resource_meth)).to_key) :
-        nil
+      current_resource_val = send(:"current_#{resource_name}")
+      self.resource = current_resource_val ? resource_class.to_adapter.get!(current_resource_val.to_key) :
+                      nil
     end
 end
